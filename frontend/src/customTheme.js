@@ -1,8 +1,7 @@
-import { theme, extendTheme } from '@chakra-ui/react';
+import { extendTheme } from '@chakra-ui/react';
 
-export const customTheme = extendTheme({
+const config = {
   colors: {
-    ...theme.colors,
     whitish: '#fcfcfc',
     yellowish: {
       100: '#f5dd83',
@@ -12,11 +11,12 @@ export const customTheme = extendTheme({
     orangish: '#f0925a',
   },
   fonts: {
-    ...theme.fonts,
     body: 'Caudex',
     heading: 'Alegreya Sans',
     mono: 'Salsa',
   },
   initialColorMode: 'dark',
   useSystemColorMode: false,
-});
+};
+
+export const customTheme = extendTheme({ config });

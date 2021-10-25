@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import { customTheme } from './customTheme';
+
 import '@fontsource/alegreya-sans/700.css';
 import '@fontsource/caudex/400.css';
 import '@fontsource/salsa/latin-400.css';
@@ -11,7 +13,7 @@ import '@fontsource/tenor-sans/latin-400.css';
 
 ReactDOM.render(
   <StrictMode>
-    <ColorModeScript initialColorMode="dark" />
+    <ColorModeScript initialColorMode={customTheme.config.initialColorMode} />
     <App />
   </StrictMode>,
   document.getElementById('root')
