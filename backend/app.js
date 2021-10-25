@@ -40,6 +40,9 @@ app.use(morgan(process.env.LOGGER_FORMAT));
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(
+  express.static(path.join(__dirname, '../frontend/build', 'index.html'))
+);
 app.use(express.json());
 
 // API routes
@@ -74,8 +77,12 @@ app.use((error, req, res, next) => {
   });
 });
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
 // Starting Server
-const port = process.env.EXPRESS_PORT || 4000;
+const port = process.env.EXPRESS_PORT || 5000;
 const host = process.env.EXPRESS_HOST || 'localhost';
 
 const start = async () => {
@@ -85,3 +92,4 @@ const start = async () => {
 };
 
 start();
+ç;
