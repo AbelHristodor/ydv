@@ -17,4 +17,6 @@ export const customTheme = extendTheme({
     heading: 'Alegreya Sans',
     mono: 'Salsa',
   },
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
 });
