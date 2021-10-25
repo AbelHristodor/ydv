@@ -92,4 +92,3 @@ const start = async () => {
 };
 
 start();
-ç;
