@@ -14,7 +14,7 @@ export const Footer = () => {
     >
       <Text
         textAlign="center"
-        fontSize={{ base: '14px', lg: '16px' }}
+        fontSize={{ base: '12px', lg: '16px' }}
         fontFamily="mono"
       >
         {new Date().getFullYear()} -{' '}

@@ -11,8 +11,11 @@ import {
 import { RepeatIcon } from '@chakra-ui/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
+import cookies from 'universal-cookie';
 
 import { DropdownMenu } from './DropdownMenu';
+
+const cookie = cookies.Cookie();
 
 export const Verse = props => {
   const [verse, setVerse] = useState([]);
@@ -42,7 +45,7 @@ export const Verse = props => {
     });
   };
 
-  const fetchGetData = async () => {
+  const fetchGeoData = async () => {
     axios.get(geoinfo_url).then(data => {
       let countryCode = data.data.countryCode.toLowerCase;
       if (languages[countryCode]) return setLang(countryCode);
@@ -55,7 +58,7 @@ export const Verse = props => {
   };
 
   useEffect(() => {
-    if (!lang) fetchGetData();
+    if (!lang) fetchGeoData();
     fetchVerses();
   }, [lang]);
 
