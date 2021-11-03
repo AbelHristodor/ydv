@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Flex,
-  VStack,
-  Text,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { ChakraProvider, Box, Flex, VStack, Text } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { customTheme } from './customTheme';
 import { MyNav } from './components/MyNav';
@@ -15,8 +8,6 @@ import { TextSVG } from './components/TextSVG';
 import { Footer } from './components/footer';
 
 function App() {
-  const textColor = useColorModeValue('gray.400', 'whitish');
-
   const opacityTransition = {
     hidden: {
       opacity: 0,

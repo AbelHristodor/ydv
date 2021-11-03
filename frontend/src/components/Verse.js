@@ -11,15 +11,15 @@ import {
 import { RepeatIcon } from '@chakra-ui/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import cookies from 'universal-cookie';
+import Cookies from 'universal-cookie';
 
 import { DropdownMenu } from './DropdownMenu';
 
-const cookie = cookies.Cookie();
+const cookie = new Cookies();
 
 export const Verse = props => {
   const [verse, setVerse] = useState([]);
-  const [lang, setLang] = useState('it');
+  const [lang, setLang] = useState('');
   const [name, setName] = useState('');
 
   const reloadButtonColor = useColorModeValue('orangish', 'white');
@@ -47,7 +47,7 @@ export const Verse = props => {
 
   const fetchGeoData = async () => {
     axios.get(geoinfo_url).then(data => {
-      let countryCode = data.data.countryCode.toLowerCase;
+      let countryCode = data.data.countryCode.toLowerCase();
       if (languages[countryCode]) return setLang(countryCode);
       return setLang('en');
     });
@@ -58,11 +58,23 @@ export const Verse = props => {
   };
 
   useEffect(() => {
-    if (!lang) fetchGeoData();
-    fetchVerses();
+    (async () => {
+      let cookieLang = cookie.get('lang');
+      if (cookieLang) setLang(cookieLang);
+      if (!lang) await fetchGeoData();
+      await fetchVerses();
+    })();
   }, [lang]);
 
+  const setLangCookie = countryCode => {
+    let expiryDate = new Date();
+    let month = (expiryDate.getMonth() + 2) % 12;
+    expiryDate.setMonth(month);
+    cookie.set('lang', countryCode, {});
+  };
+
   const handleClick = countryCode => {
+    setLangCookie(countryCode);
     setLang(countryCode);
   };
 
@@ -78,7 +90,7 @@ export const Verse = props => {
             {verse &&
               verse.map(verse => {
                 return (
-                  <motion.p
+                  <motion.div
                     key={verse.id}
                     exit={{ opacity: 0 }}
                     initial="hidden"
@@ -93,7 +105,7 @@ export const Verse = props => {
                     >
                       {verse.text}
                     </Text>
-                  </motion.p>
+                  </motion.div>
                 );
               })}
           </AnimatePresence>
