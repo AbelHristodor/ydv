@@ -67,10 +67,7 @@ export const Verse = props => {
   }, [lang]);
 
   const setLangCookie = countryCode => {
-    let expiryDate = new Date();
-    let month = (expiryDate.getMonth() + 2) % 12;
-    expiryDate.setMonth(month);
-    cookie.set('lang', countryCode, {});
+    cookie.set('lang', countryCode, { maxAge: 2592000 });
   };
 
   const handleClick = countryCode => {
