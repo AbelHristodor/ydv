@@ -34,7 +34,7 @@ export const Verse = props => {
     pt: 'almeida',
   };
 
-  const api_url = 'http://localhost:4000/api/verse/one/';
+  const api_url = 'api/verse/one/';
   const geoinfo_url = 'http://ip-api.com/json/';
 
   const fetchVerses = async () => {
