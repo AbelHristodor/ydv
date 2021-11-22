@@ -35,7 +35,7 @@ export const Verse = props => {
   };
 
   const api_url = 'api/verse/one/';
-  const geoinfo_url = 'https://ip-api.com/json/';
+  const geoinfo_url = 'http://ip-api.com/json/';
 
   const fetchVerses = async () => {
     axios.get(api_url + lang).then(data => {
