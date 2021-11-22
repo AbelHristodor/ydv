@@ -35,7 +35,7 @@ export const Verse = props => {
   };
 
   const api_url = 'api/verse/one/';
-  const geoinfo_url = 'http://ip-api.com/json/';
+  const geoinfo_url = 'https://ipapi.co/json';
 
   const fetchVerses = async () => {
     axios.get(api_url + lang).then(data => {
@@ -47,7 +47,7 @@ export const Verse = props => {
 
   const fetchGeoData = async () => {
     axios.get(geoinfo_url).then(data => {
-      let countryCode = data.data.countryCode.toLowerCase();
+      let countryCode = data.data.country.toLowerCase();
       if (languages[countryCode]) return setLang(countryCode);
       return setLang('en');
     });
