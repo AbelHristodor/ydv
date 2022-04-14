@@ -1,19 +1,13 @@
 const router = require('express').Router();
 const axios = require('axios');
 const ash = require('express-async-handler');
-const { v1: uuidv1, parse } = require('uuid');
+
+const books = require('../utils/books');
+const languages = require('../utils/translations')
 
 const Verse = require('../models/verse');
-const ErrorHandler = require('../utils/error_handler');
+const { APIError, DatabaseError, BadRequestError} = require('../utils/errors');
 
-const languages = {
-  it: 'giovanni',
-  en: 'kjv',
-  ro: 'cornilescu',
-  ru: 'synodal',
-  es: 'rv1858',
-  pt: 'almeida',
-};
 
 router.get(
   '/ref/all',
@@ -36,60 +30,36 @@ router.get(
   '/one/:lang',
   ash(async (req, res, next) => {
     const lang = languages[req.params.lang];
-    if (!lang) throw new ErrorHandler(500, 'Language unavailable');
-
-    Verse.findRandom({}, { __v: 0 }, { limit: 1 }, (err, result) => {
-      if (err) throw new ErrorHandler(500, "Can't get random verse");
-      const { ref, bookId, _id } = result[0];
-
-      const [chapterNumber, verse] = ref.split(':');
-
-      getChapter(lang, bookId, chapterNumber)
-        .then(data => {
-          const { name, verses, translation } = data.data;
-
-          // Building Response
-          const result = {
-            name: `${name}:${verse}`,
-            translation,
-            verses: [],
-          };
-
-          // Multiple Verses
-          if (verse.indexOf('-') != -1) {
-            const [begin, end] = verse.split('-');
-            for (let i = begin - 1; i < end; i++) {
-              let toPush = {
-                ...verses[i],
-                id: uuidv1(),
-              };
-              result.verses.push(toPush);
-            }
-          } else {
-            // Single Verse
-            let toPush = {
-              ...verses[parseInt(verse - 1)],
-              id: uuidv1(),
-            };
-            result.verses.push(toPush);
-          }
-
-          res.status(200).send(result);
-        })
-        .catch(err => {
-          throw new ErrorHandler(500, err.message);
+    if (!lang) throw new BadRequestError('Language unavailable');
+    Verse.findRandom({}, {__v: 0}, {limit: 1}, (err, data) => {
+      if(err){
+        throw new DatabaseError()
+      }
+      const { ref, bookId, _id } = data[0];
+      const book = books[bookId-1]
+      getPassage(lang, ref, book).then((json) => {
+        const data = JSON.parse(json.data.substring(1, json.data.length-2))
+        const verses = data.book[0].chapter
+        return res.send({
+          id: _id,
+          ref,
+          book,
+          translation: lang,
+          lang: req.params.lang,
+          verses,
         });
-    });
+      })
+    })
   })
 );
 
-const getChapter = (lang, bookId, chapterNumber) => {
-  const url = `https://getbible.net/v2/${lang}/${bookId}/${chapterNumber}.json`;
+const getPassage = (lang, ref, book) => {
+  const url = `https://getbible.net/json?passage=${book} ${ref}&version=${lang}`
   try {
-    return axios.get(url);
+    return axios.get(url)
   } catch (err) {
-    throw new ErrorHandler(500, err);
+    throw new APIError(502, 'Service Unavailable');
   }
-};
+}
 
 module.exports = router;
